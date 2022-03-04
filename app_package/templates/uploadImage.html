@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes text-light text-center">
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+
+    <div class="card p-4 m-4 mx-auto" style="width: 600px">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="imageUpload" class="form-label">Upload Image</label>
+                <input class="form-control" type="file" name="file" id="imageUpload">
+            </div>
+            <input type="submit" value="Upload" class="btn btn-primary mt-3">
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}
