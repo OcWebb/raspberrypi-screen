@@ -49,13 +49,13 @@ def setContent():
 def getContent():
     dir = os.path.join(app.static_folder, "images")
     content = os.listdir(dir)[0]
+
     contentPath = os.path.join(dir, content)
     name, extension = os.path.splitext(contentPath)
     print (extension)
 
-    with open(os.path.join(dir, content), "rb") as image_file:
-        encodedContent = base64.b64encode(image_file.read())
-        return encodedContent
+    with open(os.path.join(dir, content), "rb") as contentFile:
+        encodedContent = base64.b64encode(contentFile.read())
         encodingAsString = encodedContent.decode('ascii')
 
         contentHeaderMimetype = getHeaderMimetype(extension)
@@ -63,6 +63,7 @@ def getContent():
 
         if contentHeaderMimetype:
             encodingAsString = contentHeaderMimetype + encodingAsString
+            return encodingAsString
 
 
 def getHeaderMimetype(extension):

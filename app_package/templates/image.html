@@ -7,7 +7,7 @@
 </div> -->
 
 <div class="menu-image-box">
-    <object id="mainImage" src="data:image/png;base64,{{ encodedContent }}" class="center-fit" ></object>
+    <object id="mainContent" src="" class="center-fit" ></object>
 </div>
 
 
@@ -17,17 +17,19 @@
 {% block scripts %}
 
 <script type="text/javascript">
-    var getImage = function(){
+    var getContent = function(){
         $.ajax({ 
             medthod: 'GET',
             url:"{{ url_for('getContent') }}",
             success: function(data){
-                $("#mainImage").attr('src', "data:image/png;base64," + data);
+                $("#mainContent").attr('src', data);
             }
         });
     };
 
-    setInterval(getImage, 3000);
+    window.onload = getContent;
+
+    setInterval(getContent, 3000);
 </script>
 
 {% endblock %}
