@@ -2,9 +2,14 @@
 
 {% block content %}
 
-<div class="menu-image-box">
+<!-- <div class="menu-image-box">
     <img id="mainImage" src="data:image/png;base64, {{ encodedImage }}" class="center-fit" >
+</div> -->
+
+<div class="menu-image-box">
+    <object id="mainImage" src="data:image/png;base64,{{ encodedContent }}" class="center-fit" ></object>
 </div>
+
 
 {% endblock %}
 
@@ -15,9 +20,9 @@
     var getImage = function(){
         $.ajax({ 
             medthod: 'GET',
-            url:"{{ url_for('getImage') }}",
+            url:"{{ url_for('getContent') }}",
             success: function(data){
-                $("#mainImage").attr('src', 'data:image/png;base64, ' + data);
+                $("#mainImage").attr('src', "data:image/png;base64," + data);
             }
         });
     };
