@@ -7,9 +7,7 @@ import os
 
 @app.route('/', methods= ['GET', 'POST'])
 def showFullscreenImage():
-    content = getContent()
-
-    return render_template('image.html', encodedContent=content)
+    return render_template('content-1x1.html')
 
 
 @app.route('/content/set', methods= ['GET', 'POST'])
@@ -26,7 +24,7 @@ def setContent():
             return redirect(request.url)
 
         if file:
-            dir = os.path.join(app.static_folder, "images")
+            dir = os.path.join(app.static_folder, "content")
             images = os.listdir(dir)
 
             for image in images:
@@ -47,7 +45,7 @@ def setContent():
 
 @app.route('/content/get', methods= ['GET'])
 def getContent():
-    dir = os.path.join(app.static_folder, "images")
+    dir = os.path.join(app.static_folder, "content")
     content = os.listdir(dir)[0]
 
     contentPath = os.path.join(dir, content)
@@ -60,13 +58,20 @@ def getContent():
 
         contentHeaderMimetype = getHeaderMimetype(extension)
 
-
-        if contentHeaderMimetype:
-            encodingAsString = contentHeaderMimetype + encodingAsString
-            return encodingAsString
+        return {'mimeType': contentHeaderMimetype, 'data': encodingAsString}
 
 
 def getHeaderMimetype(extension):
-    if extension in ['.jpg', '.png']:
-        return "data:image/png;base64,"
-    return NULL
+    if extension in ['.jpg', '.jpeg']:
+        return "image/jpeg"
+
+    elif extension == '.png':
+        return "image/png"
+
+    elif extension == ".mp4":
+        return "video/mp4"
+    elif extension == ".gif":
+        return "image/gif"
+        
+    else:
+        return NULL

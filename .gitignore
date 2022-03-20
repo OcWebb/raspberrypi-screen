@@ -4,3 +4,4 @@ deactivate/
 exit/
 node_modules/
 __pycache__/
+app_package/static/content
