@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from flask import render_template, url_for, request, redirect, flash
 from werkzeug.utils import secure_filename
 from app_package import app
@@ -6,32 +7,24 @@ import os
 
 @app.route('/', methods= ['GET', 'POST'])
 def showFullscreenImage():
-    image = getImage()
-
-    return render_template('image.html', encodedImage=image)
+    return render_template('content-1x1.html')
 
 
-@app.route('/image/set', methods= ['GET', 'POST'])
-def setImage():
-
-    print('\n\n')
-    print(request.method)
-    print(request.files)
-    print('\n\n')
-    
+@app.route('/content/set', methods= ['GET', 'POST'])
+def setContent():
     if request.method == 'POST':
         if 'file' not in request.files:
-            flash("Image Failed to upload, file not found")
+            flash("Content Failed to upload, file not found")
             return redirect(request.url)
 
         file = request.files['file']
         
         if file.filename == '':
-            flash("Image Failed to upload")
+            flash("Content Failed to upload")
             return redirect(request.url)
 
         if file:
-            dir = os.path.join(app.static_folder, "images")
+            dir = os.path.join(app.static_folder, "content")
             images = os.listdir(dir)
 
             for image in images:
@@ -40,9 +33,9 @@ def setImage():
             newImageFilename = secure_filename(file.filename)
             file.save(os.path.join(dir, newImageFilename))
 
-            flash("Image Saved")
+            flash("Content Saved")
 
-            return redirect(url_for('setImage'))
+            return redirect(url_for('setContent'))
 
         return
 
@@ -50,11 +43,35 @@ def setImage():
     return render_template('uploadImage.html')
 
 
-@app.route('/image/get', methods= ['GET'])
-def getImage():
-    dir = os.path.join(app.static_folder, "images")
-    images = os.listdir(dir)
+@app.route('/content/get', methods= ['GET'])
+def getContent():
+    dir = os.path.join(app.static_folder, "content")
+    content = os.listdir(dir)[0]
 
-    with open(os.path.join(dir, images[0]), "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read())
-        return encoded_string
+    contentPath = os.path.join(dir, content)
+    name, extension = os.path.splitext(contentPath)
+    print (extension)
+
+    with open(os.path.join(dir, content), "rb") as contentFile:
+        encodedContent = base64.b64encode(contentFile.read())
+        encodingAsString = encodedContent.decode('ascii')
+
+        contentHeaderMimetype = getHeaderMimetype(extension)
+
+        return {'mimeType': contentHeaderMimetype, 'data': encodingAsString}
+
+
+def getHeaderMimetype(extension):
+    if extension in ['.jpg', '.jpeg']:
+        return "image/jpeg"
+
+    elif extension == '.png':
+        return "image/png"
+
+    elif extension == ".mp4":
+        return "video/mp4"
+    elif extension == ".gif":
+        return "image/gif"
+        
+    else:
+        return NULL

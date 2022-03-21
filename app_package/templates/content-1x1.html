@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="content-panel">
+    <img id="mainContent" type="" src="" class="center-fit" >
+</div>
+
+<!-- <div class="container p-0 m-0">
+    
+    <div class="content-panel">
+        <div id='mainContent'></div>
+    </div>
+
+  </div> -->
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script type="text/javascript">
+    var getContent = function()
+    {
+        let imageHTML = "<img id='mainContent' class='center-fit' type='' src=''>";
+        let videoHTML = "<video id='mainContent' class='center-fit' src='' width='100%' autoplay loop muted></video>";
+
+        $.ajax({ 
+            medthod: 'GET',
+            url:"{{ url_for('getContent') }}",
+            success: function(response)
+            {
+                let encodedData = response['data'];
+                let mimeType = response['mimeType']
+                let fullDataEncoding = "data:" + mimeType + ";base64," + encodedData;
+
+                
+                
+                if ($("#mainContent").attr('src') != fullDataEncoding)
+                {
+                    if (mimeType.includes("video"))
+                    {
+                        console.log(videoHTML);
+
+                        $(".content-panel").html(videoHTML);
+                    } 
+                    else if (mimeType.includes("image"))
+                    {
+                        $(".content-panel").html(imageHTML);
+                    }
+
+                    $("#mainContent").attr('src', fullDataEncoding);
+                    $("#mainContent").attr('type', mimeType);
+                }
+            }
+        });
+    };
+
+    window.onload = getContent;
+
+    setInterval(getContent, 1000);
+</script>
+
+{% endblock %}
